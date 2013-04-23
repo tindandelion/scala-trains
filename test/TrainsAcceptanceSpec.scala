@@ -27,12 +27,12 @@ class TrainsAcceptanceSpec extends FunSpec {
 
     it("reports collision when 2 trains finish at the same station") {
       val trains = List(
-        new Train("a", "b"),
-        new Train("c", "b"))
+        new Train(List("a", "b")),
+        new Train(List("c", "b")))
 
       assert(hasCollisions(trains), "collision is expected")
     }
   }
 
-  def trainStartingAt(station: String): Train = new Train(station, station)
+  def trainStartingAt(station: String): Train = new Train(List(station))
 }

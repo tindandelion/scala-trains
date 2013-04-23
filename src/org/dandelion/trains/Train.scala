@@ -1,6 +1,10 @@
 package org.dandelion.trains
 
-class Train(val startStation: String, val finishStation: String) {
+class Train(val route: List[String]) {
+
+  def startStation = route.head
+  def finishStation = route.last
+
   def collidesWith(other: Train): Boolean =
     (other.startStation == this.startStation) ||
       (other.finishStation == this.finishStation)
