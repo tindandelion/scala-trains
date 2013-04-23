@@ -32,6 +32,4 @@ class TrainSpec extends FunSpec {
 
     assert(me.collidesWith(other), "collision is expected at the track a <-> b")
   }
-
-
 }
