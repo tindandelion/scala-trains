@@ -1,6 +1,6 @@
 package org.dandelion.trains
 
-class Train(val route: List[String]) {
+class Train(val route: List[Any]) {
   def collidesWith(others: List[Train]): Boolean = others.exists(collidesWith)
 
   def collidesWith(other: Train): Boolean =
