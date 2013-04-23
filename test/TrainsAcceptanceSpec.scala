@@ -1,35 +1,38 @@
+import org.dandelion.trains.{Main, Train}
 import org.scalatest.FunSpec
-
-class Train(val station: String)
-
-object Trains {
-  def hasCrash(trains: Array[Train]) =
-    if (trains.size > 1) trains(0).station == trains(1).station
-    else false
-}
 
 class TrainsAcceptanceSpec extends FunSpec {
 
-  import Trains._
+  import Main._
 
   describe("initial configurations") {
-    it("reports no crash if there are no trains") {
-      assert(!hasCrash(Array()))
+    it("reports no collision if there are no trains") {
+      assert(!hasCollisions(List()))
     }
 
-    it("reports no crash if there's only one train") {
-      val trains = Array(new Train("a"))
-      assert(!hasCrash(trains))
+    it("reports no collision if there's only one train") {
+      val trains = List(trainStartingAt("a"))
+      assert(!hasCollisions(trains))
     }
 
-    it("reports no crash when 2 trains start from different stations") {
-      val trains = Array(new Train("a"), new Train("b"))
-      assert(!hasCrash(trains))
+    it("reports no collision when 2 trains start from different stations") {
+      val trains = List(trainStartingAt("a"), trainStartingAt("b"))
+      assert(!hasCollisions(trains))
     }
 
-    it("reports crash when 2 trains start from the same station") {
-      val trains = Array(new Train("b"), new Train("a"), new Train("a"))
-      assert(hasCrash(trains), "crash is expected")
+    it("reports collision when 2 trains start from the same station") {
+      val trains = List(trainStartingAt("b"), trainStartingAt("a"), trainStartingAt("a"))
+      assert(hasCollisions(trains), "crash is expected")
+    }
+
+    it("reports collision when 2 trains finish at the same station") {
+      val trains = List(
+        new Train("a", "b"),
+        new Train("c", "b"))
+
+      assert(hasCollisions(trains), "collision is expected")
     }
   }
+
+  def trainStartingAt(station: String): Train = new Train(station, station)
 }
