@@ -33,5 +33,12 @@ class TrainSpec extends FunSpec {
 
       assert(me.collidesWith(other), "collision is expected at the track a <-> b")
     }
+
+    it("collides at the final station even if arrives later") {
+      val me = new Train(List('a', 'b', 'c'))
+      val other = new Train(List('d', 'c'))
+
+      assert(me.collidesWith(other), "collision is expected at the station 'c'")
+    }
   }
 }
