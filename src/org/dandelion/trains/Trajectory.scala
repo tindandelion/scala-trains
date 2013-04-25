@@ -41,6 +41,8 @@ object Trajectory {
 
   def build(route: List[Any]): List[Position] = build(route, List())
 
+  def build(route: List[Any], tracks: Any): List[Position] = build(route)
+
   private def build(route: List[Any], res: List[Position]): List[Position] = {
     route match {
       case Nil => res

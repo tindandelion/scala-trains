@@ -19,10 +19,18 @@ class TrajectorySpec extends FunSpec {
       assert(traj === List(AtStation('a'), AtTrack('a', 'b'), AtStation('b')))
     }
 
-    it("builds a trajectory for a long route") {
+    it("builds a trajectory for a multi-station route") {
       val route = List('a', 'b', 'c')
       val traj = Trajectory.build(route)
       assert(traj === List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'), AtTrack('b', 'c'), AtStation('c')))
+    }
+
+    it("takes track length into account") {
+      val route = List('a', 'b')
+      val tracks = Map(('a', 'b') -> 2)
+
+      val traj = Trajectory.build(route, tracks)
+      assert(traj === List(AtStation('a'), AtTrack('a', 'b'), AtTrack('a', 'b'), AtStation('b')))
     }
   }
 

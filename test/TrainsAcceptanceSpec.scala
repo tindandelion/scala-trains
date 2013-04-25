@@ -45,7 +45,7 @@ class TrainsAcceptanceSpec extends FunSpec {
   }
 
   describe("tracks have variable length") {
-    it("takes track length into account") {
+    ignore("takes track length into account") {
       val trains = List(
         new Train(List('a', 'b', 'c')),
         new Train(List('d', 'b')))
