@@ -5,7 +5,7 @@ class TrainsAcceptanceSpec extends FunSpec {
 
   import Main._
 
-  describe("initial configurations") {
+  describe("trivial configurations") {
     it("reports no collision if there are no trains") {
       assert(!hasCollisions(List()))
     }
@@ -14,7 +14,9 @@ class TrainsAcceptanceSpec extends FunSpec {
       val trains = List(trainStartingAt("a"))
       assert(!hasCollisions(trains))
     }
+  }
 
+  describe("all tracks have the same length") {
     it("reports no collision when 2 trains start from different stations") {
       val trains = List(trainStartingAt("a"), trainStartingAt("b"))
       assert(!hasCollisions(trains))
@@ -39,6 +41,21 @@ class TrainsAcceptanceSpec extends FunSpec {
         new Train(List('c', 'b', 'd')))
 
       assert(hasCollisions(trains), "collision is expected")
+    }
+  }
+
+  describe("tracks have variable length") {
+    it("takes track length into account") {
+      val trains = List(
+        new Train(List('a', 'b', 'c')),
+        new Train(List('d', 'b')))
+
+      val tracks = List(
+        ('a', 'b', 1),
+        ('b', 'c', 1),
+        ('d', 'b', 2))
+
+      assert(!hasCollisions(trains, tracks), "collision is not expected")
     }
   }
 

@@ -5,4 +5,6 @@ object Main {
     case t :: others => t.collidesWith(others) || hasCollisions(others)
     case _ => false
   }
+
+  def hasCollisions(trains: List[Train], tracks: List[Any]): Boolean = hasCollisions(trains)
 }
