@@ -1,4 +1,4 @@
-import org.dandelion.trains.Trajectory
+import org.dandelion.trains.{AtTrack, AtStation, Trajectory}
 import org.scalatest.FunSpec
 
 class TrajectorySpec extends FunSpec {
@@ -10,19 +10,19 @@ class TrajectorySpec extends FunSpec {
     it("builds a single-station trajectory") {
       val route = List('a')
       val traj = Trajectory.build(route)
-      assert(traj === List('a'))
+      assert(traj === List(AtStation('a')))
     }
 
     it("includes the track info into the trajectory") {
       val route = List('a', 'b')
       val traj = Trajectory.build(route)
-      assert(traj === List('a', ('a', 'b'), 'b'))
+      assert(traj === List(AtStation('a'), AtTrack('a', 'b'), AtStation('b')))
     }
 
     it("builds a trajectory for a long route") {
       val route = List('a', 'b', 'c')
       val traj = Trajectory.build(route)
-      assert(traj === List('a', ('a', 'b'), 'b', ('b', 'c'), 'c'))
+      assert(traj === List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'), AtTrack('b', 'c'), AtStation('c')))
     }
   }
 }
