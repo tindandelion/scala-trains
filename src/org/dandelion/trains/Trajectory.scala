@@ -43,7 +43,7 @@ object Trajectory {
 
   def apply[T](route: List[T]): Trajectory = new Trajectory(build(route))
 
-  def build[T](route: List[T]): List[Position] = build(route, new HashMap[(T, T), Int], List())
+  def build[T](route: List[T]): List[Position] = build(route, Map[(T, T), Int](), List())
 
   def build[T](route: List[T], tracks: Tracks[T]): List[Position] = build(route, tracks, List())
 
@@ -53,10 +53,14 @@ object Trajectory {
       case List(s) => res ++ atStation(s)
       case from :: tail => {
         val to = tail.head
-        build(tail, tracks, res ++ atStation(from) ++ atTrack(from, to, 1))
+        build(tail, tracks, res ++ atStation(from) ++ atTrack(from, to, getLength(from, to, tracks)))
       }
     }
   }
+
+
+  def getLength[T](from: T, to: T, tracks: Tracks[T]): Int = tracks.getOrElse((from, to), 1)
+
 
   private def atStation[T](s: T) = List(AtStation(s))
 
