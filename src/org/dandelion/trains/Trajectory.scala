@@ -1,5 +1,7 @@
 package org.dandelion.trains
 
+import scala.collection.immutable.HashMap
+
 trait Position {
   def intersects(other: Position): Boolean
 }
@@ -37,17 +39,27 @@ class Trajectory(positions: List[Position]) {
 }
 
 object Trajectory {
-  def apply(route: List[Any]): Trajectory = new Trajectory(build(route))
+  type Tracks[T] = Map[(T, T), Int]
 
-  def build(route: List[Any]): List[Position] = build(route, List())
+  def apply[T](route: List[T]): Trajectory = new Trajectory(build(route))
 
-  def build(route: List[Any], tracks: Any): List[Position] = build(route)
+  def build[T](route: List[T]): List[Position] = build(route, new HashMap[(T, T), Int], List())
 
-  private def build(route: List[Any], res: List[Position]): List[Position] = {
+  def build[T](route: List[T], tracks: Tracks[T]): List[Position] = build(route, tracks, List())
+
+  private def build[T](route: List[T], tracks: Tracks[T], res: List[Position]): List[Position] = {
     route match {
       case Nil => res
-      case List(s) => res ++ List(AtStation(s))
-      case s1 :: tail => build(tail, res ++ List(AtStation(s1), AtTrack(s1, tail.head)))
+      case List(s) => res ++ atStation(s)
+      case from :: tail => {
+        val to = tail.head
+        build(tail, tracks, res ++ atStation(from) ++ atTrack(from, to, 1))
+      }
     }
   }
+
+  private def atStation[T](s: T) = List(AtStation(s))
+
+  private def atTrack[T](from: T, to: T, length: Int) =
+    (1 to length).map((i) => AtTrack(from, to))
 }
