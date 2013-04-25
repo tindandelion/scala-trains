@@ -22,6 +22,11 @@ class PositionSpec extends FunSpec {
       assert(me.intersects(opposite), "intersection of opposite directions expected")
       assert(!me.intersects(same), "intersection of same directions not expected")
     }
+
+    it("does not intersect with station position") {
+      assert(!AtTrack('a', 'b').intersects(AtStation('a')), "intersection is not expected")
+
+    }
   }
 
 }

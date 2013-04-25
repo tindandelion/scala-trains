@@ -25,4 +25,35 @@ class TrajectorySpec extends FunSpec {
       assert(traj === List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'), AtTrack('b', 'c'), AtStation('c')))
     }
   }
+
+  describe("intersection") {
+    it("intersects with other if have same station at the same time") {
+      val me = List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'))
+      val other = List(AtStation('a'), AtTrack('a', 'c'), AtStation('c'))
+
+      assert(Trajectory.intersect(me, other))
+    }
+
+    it("does not intersect if same station at differerent times") {
+      val me = List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'))
+      val other = List(AtStation('c'), AtTrack('c', 'a'), AtStation('a'))
+
+      assert(!Trajectory.intersect(me, other))
+    }
+
+    it("intersects with other if have same track at the same time") {
+      val me = List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'))
+      val other = List(AtStation('b'), AtTrack('b', 'a'), AtStation('a'))
+
+      assert(Trajectory.intersect(me, other))
+    }
+
+    it("intersects with other if one's final station is on the way of the other") {
+      val me = List(AtStation('b'))
+      val other = List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'))
+
+      assert(Trajectory.intersect(me, other), "intersection expected")
+      assert(Trajectory.intersect(other, me), "intersection expected")
+    }
+  }
 }
