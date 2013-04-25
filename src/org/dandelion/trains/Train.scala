@@ -2,9 +2,8 @@ package org.dandelion.trains
 
 class Train(route: List[Any]) {
 
-  val trajectory = Trajectory.build(route)
+  val trajectory: Trajectory = Trajectory(route)
 
-  def collidesWith(others: List[Train]): Boolean = others.exists(collidesWith)
-
-  def collidesWith(other: Train): Boolean = Trajectory.intersect(this.trajectory, other.trajectory)
+  def collidesWith(those: List[Train]): Boolean =
+    those.exists((that) => (this.trajectory.intersects(that.trajectory)))
 }

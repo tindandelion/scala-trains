@@ -19,7 +19,7 @@ case class AtTrack(fromStation: Any, toStation: Any) extends Position {
   }
 }
 
-class Trajectory(val positions: List[Position]) {
+class Trajectory(positions: List[Position]) {
   def current = positions.head
 
   def isFinished = positions.tail.isEmpty
@@ -37,10 +37,9 @@ class Trajectory(val positions: List[Position]) {
 }
 
 object Trajectory {
-  def build(route: List[Any]): List[Position] = build(route, List())
+  def apply(route: List[Any]): Trajectory = new Trajectory(build(route))
 
-  def intersect(me: List[Position], other: List[Position]): Boolean =
-    new Trajectory(me).intersects(new Trajectory(other))
+  def build(route: List[Any]): List[Position] = build(route, List())
 
   private def build(route: List[Any], res: List[Position]): List[Position] = {
     route match {

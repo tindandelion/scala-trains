@@ -28,32 +28,34 @@ class TrajectorySpec extends FunSpec {
 
   describe("intersection") {
     it("intersects with other if have same station at the same time") {
-      val me = List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'))
-      val other = List(AtStation('a'), AtTrack('a', 'c'), AtStation('c'))
+      val me = new Trajectory(List(AtStation('a'), AtTrack('a', 'b'), AtStation('b')))
+      val other = new Trajectory(List(AtStation('a'), AtTrack('a', 'c'), AtStation('c')))
 
-      assert(Trajectory.intersect(me, other))
+      assert(mutuallyIntersect(me, other))
     }
 
     it("does not intersect if same station at differerent times") {
-      val me = List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'))
-      val other = List(AtStation('c'), AtTrack('c', 'a'), AtStation('a'))
+      val me = new Trajectory(List(AtStation('a'), AtTrack('a', 'b'), AtStation('b')))
+      val other = new Trajectory(List(AtStation('c'), AtTrack('c', 'a'), AtStation('a')))
 
-      assert(!Trajectory.intersect(me, other))
+      assert(!me.intersects(other))
+      assert(!other.intersects(me))
     }
 
     it("intersects with other if have same track at the same time") {
-      val me = List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'))
-      val other = List(AtStation('b'), AtTrack('b', 'a'), AtStation('a'))
+      val me = new Trajectory(List(AtStation('a'), AtTrack('a', 'b'), AtStation('b')))
+      val other = new Trajectory(List(AtStation('b'), AtTrack('b', 'a'), AtStation('a')))
 
-      assert(Trajectory.intersect(me, other))
+      assert(mutuallyIntersect(me, other))
     }
 
     it("intersects with other if one's final station is on the way of the other") {
-      val me = List(AtStation('b'))
-      val other = List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'))
+      val me = new Trajectory(List(AtStation('b')))
+      val other = new Trajectory(List(AtStation('a'), AtTrack('a', 'b'), AtStation('b')))
 
-      assert(Trajectory.intersect(me, other), "intersection expected")
-      assert(Trajectory.intersect(other, me), "intersection expected")
+      assert(mutuallyIntersect(me, other))
     }
+
+    def mutuallyIntersect(one: Trajectory, two: Trajectory) = one.intersects(two) && two.intersects(one)
   }
 }
