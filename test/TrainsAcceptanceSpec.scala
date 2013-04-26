@@ -57,19 +57,6 @@ class TrainsAcceptanceSpec extends FunSpec {
 
       assert(!hasCollisions(trains), "collision is not expected")
     }
-
-    ignore("makes no distinction between tracks a -> b and b -> a") {
-      val tracks = Map[(Any, Any), Int](
-        ('a', 'b') -> 1,
-        ('b', 'c') -> 1,
-        ('b', 'd') -> 2)
-
-      val trains = List(
-        new Train(List('a', 'b', 'c'), tracks),
-        new Train(List('d', 'b'), tracks))
-
-      assert(!hasCollisions(trains), "collision is not expected")
-    }
   }
 
   def trainStartingAt(station: String): Train = new Train(List(station))

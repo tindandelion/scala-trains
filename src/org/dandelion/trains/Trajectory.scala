@@ -36,7 +36,10 @@ class Trajectory(val positions: List[Position]) {
 }
 
 class Railway[T](val tracks: Map[(T, T), Int]) {
-  def distanceBetween(one: T, two: T) = tracks.getOrElse((one, two), 1)
+  def distanceBetween(one: T, two: T) =
+    tracks.getOrElse((one, two),
+      tracks.getOrElse((two, one),
+        1))
 }
 
 object Trajectory {
