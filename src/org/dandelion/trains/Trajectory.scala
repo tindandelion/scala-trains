@@ -69,12 +69,3 @@ class Railway[T](tracks: Map[(T, T), Int]) {
 object Railway {
   def apply[T](tracks: ((T, T), Int)*) = new Railway[T](Map[(T, T), Int](tracks: _*))
 }
-
-object Trajectory {
-  type Tracks[T] = Map[(T, T), Int]
-
-  def apply[T](route: List[T], tracks: Tracks[T] = Map[(T, T), Int]()) = {
-    val rw: Railway[T] = new Railway(tracks)
-    rw.buildTrajectory(route)
-  }
-}
