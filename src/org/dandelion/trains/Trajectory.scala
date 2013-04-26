@@ -1,5 +1,6 @@
 package org.dandelion.trains
 
+
 trait Position {
   def intersects(other: Position): Boolean
 }
@@ -35,32 +36,45 @@ class Trajectory(val positions: List[Position]) {
   }
 }
 
-class Railway[T](val tracks: Map[(T, T), Int]) {
-  def distanceBetween(one: T, two: T) =
+class Railway[T](tracks: Map[(T, T), Int]) {
+
+  def buildTrajectory(route: T*): Trajectory = new Trajectory(build(route.toList, List()))
+
+  def buildTrajectory(route: List[T]): Trajectory = new Trajectory(build(route, List()))
+
+  private def build(route: List[T], res: List[Position]): List[Position] = {
+    route match {
+      case Nil => res
+      case List(s) => res ++ stationSegment(s)
+      case from :: tail => {
+        val to = tail.head
+        build(tail, res ++ trackSegment(from, to))
+      }
+    }
+  }
+
+  private def stationSegment(station: T): List[Position] = List(AtStation(station))
+
+  private def trackSegment(from: T, to: T): List[Position] = {
+    val onTrack = (1 to distance(from, to)).map(_ => AtTrack(from, to))
+    stationSegment(from) ++ onTrack
+  }
+
+  private def distance(one: T, two: T) =
     tracks.getOrElse((one, two),
-      tracks.getOrElse((two, one),
-        1))
+      tracks.getOrElse((two, one), 1))
+
+}
+
+object Railway {
+  def apply[T](tracks: ((T, T), Int)*) = new Railway[T](Map[(T, T), Int](tracks: _*))
 }
 
 object Trajectory {
   type Tracks[T] = Map[(T, T), Int]
 
-  def apply[T](route: List[T], tracks: Tracks[T] = Map[(T, T), Int]()) =
-    new Trajectory(build(route, new Railway(tracks), List()))
-
-  private def build[T](route: List[T], railway: Railway[T], res: List[Position]): List[Position] = {
-    route match {
-      case Nil => res
-      case List(s) => res ++ atStation(s)
-      case from :: tail => {
-        val to = tail.head
-        build(tail, railway, res ++ atStation(from) ++ atTrack(from, to, railway.distanceBetween(from, to)))
-      }
-    }
+  def apply[T](route: List[T], tracks: Tracks[T] = Map[(T, T), Int]()) = {
+    val rw: Railway[T] = new Railway(tracks)
+    rw.buildTrajectory(route)
   }
-
-  private def atStation[T](s: T) = List(AtStation(s))
-
-  private def atTrack[T](from: T, to: T, length: Int) =
-    (1 to length).map((i) => AtTrack(from, to))
 }

@@ -1,16 +1,49 @@
-import org.dandelion.trains.Railway
+import org.dandelion.trains.{AtTrack, AtStation, Trajectory, Railway}
 import org.scalatest.FunSpec
 
 class RailwaySpec extends FunSpec {
-  it("returns a distance between stations") {
-    val rw = new Railway(Map(('a', 'b') -> 10))
+  describe("trajectory building") {
+    it("builds an empty trajectory for an empty station list") {
+      val rw = Railway()
+      val trj = rw.buildTrajectory()
+      assert(trj.positions === Nil)
+    }
 
-    assert(rw.distanceBetween('a', 'b') === 10, "direct distance")
-    assert(rw.distanceBetween('b', 'a') === 10, "reverse distance")
-  }
+    it("builds a single-station trajectory") {
+      val rw = Railway[Char]()
+      val traj = rw.buildTrajectory('a')
+      assert(traj.positions === List(AtStation('a')))
+    }
 
-  it("returns distance of 1 by default") {
-    val rw = new Railway[Char](Map())
-    assert(rw.distanceBetween('a', 'b') === 1)
+    it("includes the track info into the trajectory") {
+      val rw = Railway(('a', 'b') -> 1)
+      val traj = rw.buildTrajectory('a', 'b')
+      assert(traj.positions === List(AtStation('a'), AtTrack('a', 'b'), AtStation('b')))
+    }
+
+    it("builds a trajectory for a multi-station route") {
+      val rw = Railway(('a', 'b') -> 1, ('b', 'c') -> 1)
+      val traj = rw.buildTrajectory('a', 'b', 'c')
+      assert(traj.positions === List(AtStation('a'), AtTrack('a', 'b'), AtStation('b'), AtTrack('b', 'c'), AtStation('c')))
+    }
+
+    it("takes track length into account") {
+      val rw = Railway(('a', 'b') -> 2)
+      val traj = rw.buildTrajectory('a', 'b')
+      assert(traj.positions === List(AtStation('a'), AtTrack('a', 'b'), AtTrack('a', 'b'), AtStation('b')))
+    }
+
+    it("understands the reverse route direction") {
+      val rw = Railway(('a', 'b') -> 2)
+      val traj = rw.buildTrajectory('b', 'a')
+      assert(traj.positions === List(AtStation('b'), AtTrack('b', 'a'), AtTrack('b', 'a'), AtStation('a')))
+    }
+
+    // TODO: There should be no default - if the track does not exist, raise the exception
+    it("assumes distance is 1 by default") {
+      val rw = Railway[Char]()
+      val traj = rw.buildTrajectory('a', 'b')
+      assert(traj.positions === List(AtStation('a'), AtTrack('a', 'b'), AtStation('b')))
+    }
   }
 }
