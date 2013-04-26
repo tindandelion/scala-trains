@@ -46,16 +46,16 @@ class TrainsAcceptanceSpec extends FunSpec {
 
   describe("tracks have variable length") {
     it("takes track length into account") {
+      val tracks = Map[(Any, Any), Int](
+        ('a', 'b') -> 1,
+        ('b', 'c') -> 1,
+        ('d', 'b') -> 2)
+
       val trains = List(
-        new Train(List('a', 'b', 'c')),
-        new Train(List('d', 'b')))
+        new Train(List('a', 'b', 'c'), tracks),
+        new Train(List('d', 'b'), tracks))
 
-      val tracks = List(
-        ('a', 'b', 1),
-        ('b', 'c', 1),
-        ('d', 'b', 2))
-
-      assert(!hasCollisions(trains, tracks), "collision is not expected")
+      assert(!hasCollisions(trains), "collision is not expected")
     }
   }
 

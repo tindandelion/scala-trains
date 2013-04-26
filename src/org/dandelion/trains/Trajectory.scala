@@ -1,7 +1,5 @@
 package org.dandelion.trains
 
-import scala.collection.immutable.HashMap
-
 trait Position {
   def intersects(other: Position): Boolean
 }
@@ -42,8 +40,9 @@ object Trajectory {
   type Tracks[T] = Map[(T, T), Int]
 
   def apply[T](route: List[T]): Trajectory = new Trajectory(build(route))
-
   def build[T](route: List[T]): List[Position] = build(route, Map[(T, T), Int](), List())
+
+  def apply[T](route: List[T], tracks: Tracks[T]) = new Trajectory(build(route, tracks))
 
   def build[T](route: List[T], tracks: Tracks[T]): List[Position] = build(route, tracks, List())
 
@@ -60,7 +59,6 @@ object Trajectory {
 
 
   def getLength[T](from: T, to: T, tracks: Tracks[T]): Int = tracks.getOrElse((from, to), 1)
-
 
   private def atStation[T](s: T) = List(AtStation(s))
 
