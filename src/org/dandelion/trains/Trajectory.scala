@@ -35,24 +35,26 @@ class Trajectory(val positions: List[Position]) {
   }
 }
 
+class Railway[T](val tracks: Map[(T, T), Int]) {
+  def distanceBetween(one: T, two: T) = tracks.getOrElse((one, two), 1)
+}
+
 object Trajectory {
   type Tracks[T] = Map[(T, T), Int]
 
   def apply[T](route: List[T], tracks: Tracks[T] = Map[(T, T), Int]()) =
-    new Trajectory(build(route, tracks, List()))
+    new Trajectory(build(route, new Railway(tracks), List()))
 
-  private def build[T](route: List[T], tracks: Tracks[T], res: List[Position]): List[Position] = {
+  private def build[T](route: List[T], railway: Railway[T], res: List[Position]): List[Position] = {
     route match {
       case Nil => res
       case List(s) => res ++ atStation(s)
       case from :: tail => {
         val to = tail.head
-        build(tail, tracks, res ++ atStation(from) ++ atTrack(from, to, getLength(from, to, tracks)))
+        build(tail, railway, res ++ atStation(from) ++ atTrack(from, to, railway.distanceBetween(from, to)))
       }
     }
   }
-
-  def getLength[T](from: T, to: T, tracks: Tracks[T]): Int = tracks.getOrElse((from, to), 1)
 
   private def atStation[T](s: T) = List(AtStation(s))
 
