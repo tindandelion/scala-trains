@@ -4,7 +4,10 @@ import Types._
 
 class Train(val number: Int, val trajectory: Trajectory)
 
+class MissingTrackError extends Exception
+
 class Railway(tracks: Map[(Station, Station), Int]) {
+  def this(tracks: ((Station, Station), Int)*) = this(Map[(Station, Station), Int](tracks: _*))
 
   def train(number: Int, route: Station*): Train = new Train(number, buildTrajectory(route.toList))
 
@@ -30,10 +33,6 @@ class Railway(tracks: Map[(Station, Station), Int]) {
 
   private def distance(one: Station, two: Station) =
     tracks.getOrElse((one, two),
-      tracks.getOrElse((two, one), 1))
+      tracks.getOrElse((two, one), { throw new MissingTrackError }))
 
-}
-
-object Railway {
-  def apply(tracks: ((Station, Station), Int)*) = new Railway(Map[(Station, Station), Int](tracks: _*))
 }

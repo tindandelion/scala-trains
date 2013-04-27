@@ -14,7 +14,7 @@ class TrainsAcceptanceSpec extends FunSpec {
     }
 
     it("reports no collision if there's only one train") {
-      val rw = Railway()
+      val rw = new Railway()
       val trains = List(rw.train(1, 'a'))
 
       assertNoCollision(trains)
@@ -24,34 +24,34 @@ class TrainsAcceptanceSpec extends FunSpec {
 
   describe("all tracks have the same length") {
     it("reports no collision when 2 trains start from different stations") {
-      val rw = Railway()
+      val rw = new Railway()
       val trains = List(rw.train(1, 'a'), rw.train(2, 'b'))
 
       assertNoCollision(trains)
     }
 
     it("reports collision when 2 trains start from the same station") {
-      val rw = Railway()
+      val rw = new Railway()
       val trains = List(rw.train(1, 'b'), rw.train(2, 'a'), rw.train(3, 'a'))
       assertCollide(trains, (2, 3, AtStation('a')))
     }
 
     it("reports collision when 2 trains finish at the same station") {
-      val rw = Railway(('a', 'b') -> 1, ('c', 'b') -> 1)
+      val rw = new Railway(('a', 'b') -> 1, ('c', 'b') -> 1)
       val trains = List(rw.train(1, 'a', 'b'), rw.train(2, 'c', 'b'))
 
       assertCollide(trains, (1, 2, AtStation('b')))
     }
 
     it("reports collision when one train finishes at the station and another passes it later") {
-      val rw = Railway(('a', 'b') -> 1, ('c', 'b') -> 1, ('b', 'd') -> 1)
+      val rw = new Railway(('a', 'b') -> 1, ('c', 'b') -> 1, ('b', 'd') -> 1)
       val trains = List(rw.train(1, 'a', 'b'), rw.train(2, 'c', 'b', 'd'))
 
       assertCollide(trains, (1, 2, AtStation('b')))
     }
 
     it("reports collision when trains meet at the track") {
-      val rw = Railway(('a', 'b') -> 1)
+      val rw = new Railway(('a', 'b') -> 1)
       val trains = List(rw.train(1, 'a', 'b'), rw.train(2, 'b', 'a'))
 
       assertCollide(trains, (1, 2, AtTrack('a', 'b')))
@@ -61,14 +61,14 @@ class TrainsAcceptanceSpec extends FunSpec {
 
   describe("tracks have variable length") {
     it("takes track length into account") {
-      val rw = Railway(('a', 'b') -> 1, ('b', 'c') -> 1, ('d', 'b') -> 2)
+      val rw = new Railway(('a', 'b') -> 1, ('b', 'c') -> 1, ('d', 'b') -> 2)
       val trains = List(rw.train(1, 'a', 'b', 'c'), rw.train(2, 'd', 'b'))
 
       assertNoCollision(trains)
     }
 
     it("does not report collision if trains follow each other on the same track") {
-      val rw = Railway(
+      val rw = new Railway(
         ('a', 'c') -> 2,
         ('b', 'c') -> 1,
         ('c', 'd') -> 4,
