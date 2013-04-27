@@ -1,12 +1,14 @@
 package org.dandelion.trains
 
-class Railway[T](tracks: Map[(T, T), Int]) {
+import Types._
 
-  def buildTrajectory(route: T*): Trajectory = new Trajectory(build(route.toList, List()))
+class Railway(tracks: Map[(Station, Station), Int]) {
 
-  def buildTrajectory(route: List[T]): Trajectory = new Trajectory(build(route, List()))
+  def buildTrajectory(route: Station*): Trajectory = new Trajectory(build(route.toList, List()))
 
-  private def build(route: List[T], res: List[Position]): List[Position] = {
+  def buildTrajectory(route: Route): Trajectory = new Trajectory(build(route, List()))
+
+  private def build(route: Route, res: List[Position]): List[Position] = {
     route match {
       case Nil => res
       case List(s) => res ++ stationSegment(s)
@@ -17,19 +19,19 @@ class Railway[T](tracks: Map[(T, T), Int]) {
     }
   }
 
-  private def stationSegment(station: T): List[Position] = List(AtStation(station))
+  private def stationSegment(station: Station): List[Position] = List(AtStation(station))
 
-  private def trackSegment(from: T, to: T): List[Position] = {
+  private def trackSegment(from: Station, to: Station): List[Position] = {
     val onTrack = (1 to distance(from, to)).map(_ => AtTrack(from, to))
     stationSegment(from) ++ onTrack
   }
 
-  private def distance(one: T, two: T) =
+  private def distance(one: Station, two: Station) =
     tracks.getOrElse((one, two),
       tracks.getOrElse((two, one), 1))
 
 }
 
 object Railway {
-  def apply[T](tracks: ((T, T), Int)*) = new Railway[T](Map[(T, T), Int](tracks: _*))
+  def apply(tracks: ((Station, Station), Int)*) = new Railway(Map[(Station, Station), Int](tracks: _*))
 }

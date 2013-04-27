@@ -9,7 +9,7 @@ case class Train(number: Int, route: Route)
 
 object Main {
 
-  def detectCollision(rw: Railway[Station], trains: List[Train]): Option[Collision] = {
+  def detectCollision(rw: Railway, trains: List[Train]): Option[Collision] = {
     val trajectories = trains.map(t => rw.buildTrajectory(t.route))
     detectCollision(trajectories)
   }

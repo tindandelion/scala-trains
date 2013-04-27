@@ -10,7 +10,7 @@ class RailwaySpec extends FunSpec {
     }
 
     it("builds a single-station trajectory") {
-      val rw = Railway[Char]()
+      val rw = Railway()
       val traj = rw.buildTrajectory('a')
       assert(traj.positions === List(AtStation('a')))
     }
@@ -41,7 +41,7 @@ class RailwaySpec extends FunSpec {
 
     // TODO: There should be no default - if the track does not exist, raise the exception
     it("assumes distance is 1 by default") {
-      val rw = Railway[Char]()
+      val rw = Railway()
       val traj = rw.buildTrajectory('a', 'b')
       assert(traj.positions === List(AtStation('a'), AtTrack('a', 'b'), AtStation('b')))
     }
