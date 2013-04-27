@@ -1,6 +1,7 @@
 import org.scalatest.FunSpec
-import org.dandelion.trains.{Train, Collision, Railway, Main}
+import org.dandelion.trains._
 import Main._
+import scala.Some
 
 
 class TrainsAcceptanceSpec extends FunSpec {
@@ -32,7 +33,7 @@ class TrainsAcceptanceSpec extends FunSpec {
     it("reports collision when 2 trains start from the same station") {
       val rw = Railway()
       val trains = List(rw.train(1, 'b'), rw.train(2, 'a'), rw.train(3, 'a'))
-      assertCollide(trains, (2, 3))
+      assertCollide(trains, (2, 3, AtStation('a')))
     }
 
     it("reports collision when 2 trains finish at the same station") {
@@ -80,6 +81,16 @@ class TrainsAcceptanceSpec extends FunSpec {
   }
 
   def assertCollide(trains: List[Train], colliding: (Int, Int)) {
+    detectCollision(trains) match {
+      case None => fail("collision is expected")
+      case Some(Collision(t1, t2)) => {
+        if (!((t1.number, t2.number) == colliding))
+          fail("Collision is expected for trains " + colliding + ", but was for " + (t1, t2))
+      }
+    }
+  }
+
+  def assertCollide(trains: List[Train], colliding: (Int, Int, Position)) {
     detectCollision(trains) match {
       case None => fail("collision is expected")
       case Some(Collision(t1, t2)) => {
