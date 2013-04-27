@@ -1,4 +1,4 @@
-import org.dandelion.trains.{Railway, Main, Train}
+import org.dandelion.trains.{Railway, Main}
 import org.scalatest.FunSpec
 
 class TrainsAcceptanceSpec extends FunSpec {
@@ -7,7 +7,7 @@ class TrainsAcceptanceSpec extends FunSpec {
 
   def railway(route: ((Station, Station), Int)*): Railway[Main.Station] = Railway[Station](route: _*)
 
-  def train(s: Station*): Train1 = List(s: _*)
+  def train(s: Station*): Train = List(s: _*)
 
   describe("trivial configurations") {
     it("reports no collision if there are no trains") {

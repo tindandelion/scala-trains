@@ -2,15 +2,19 @@ package org.dandelion.trains
 
 object Main {
   type Station = Char
-  type Train1 = List[Station]
+  type Train = List[Station]
 
-  def collide(rw: Railway[Station], trains: List[Train1]) = {
-    val t1: List[Train[Station]] = trains.map(route => new Train[Station](route, rw))
-    hasCollisions(t1)
+  def collide(rw: Railway[Station], trains: List[Train]) = {
+    val trajectories = trains.map(rw.buildTrajectory(_))
+    hasCollisions(trajectories)
   }
 
-  private def hasCollisions(trains: List[Train[Station]]): Boolean = trains match {
-    case t :: others => t.collidesWith(others) || hasCollisions(others)
+  private def hasCollisions(trjs: List[Trajectory]): Boolean = trjs match {
+    case t :: others => intersects(t, others) || hasCollisions(others)
     case _ => false
+  }
+
+  def intersects(trj: Trajectory, those: List[Trajectory]): Boolean = {
+    those.exists(trj.intersects(_))
   }
 }
