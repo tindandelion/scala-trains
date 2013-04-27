@@ -4,10 +4,10 @@ case class Collision()
 
 object Main {
   type Station = Char
-  type Train = List[Station]
+  type Route = List[Station]
 
-  def detectCollision(rw: Railway[Station], trains: List[Train]): Option[Collision] = {
-    val trajectories = trains.map(rw.buildTrajectory(_))
+  def detectCollision(rw: Railway[Station], routes: List[Route]): Option[Collision] = {
+    val trajectories = routes.map(rw.buildTrajectory(_))
     detectCollision(trajectories)
   }
 
