@@ -45,14 +45,14 @@ class TrainsAcceptanceSpec extends FunSpec {
       val rw = Railway(('a', 'b') -> 1, ('c', 'b') -> 1)
       val trains = List(train(1, 'a', 'b'), train(2, 'c', 'b'))
 
-      assertCollide(rw, trains)
+      assertCollide(rw, trains, (1, 2))
     }
 
     it("reports collision when one train finishes at the station and another passes it later") {
       val rw = Railway(('a', 'b') -> 1, ('c', 'b') -> 1, ('b', 'd') -> 1)
       val trains = List(train(1, 'a', 'b'), train(2, 'c', 'b', 'd'))
 
-      assertCollide(rw, trains)
+      assertCollide(rw, trains, (1, 2))
     }
   }
 
@@ -93,9 +93,5 @@ class TrainsAcceptanceSpec extends FunSpec {
           fail("Collision is expected for trains " + colliding + ", but was for " + (t1, t2))
       }
     }
-  }
-
-  def assertCollide(rw: Railway, trains: List[Train]) {
-    assert(detectCollision(rw, trains) === Some(Collision(0, 0)), "Collision is expected")
   }
 }

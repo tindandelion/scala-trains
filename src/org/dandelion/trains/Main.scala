@@ -7,23 +7,26 @@ case class Collision(t1: Int, t2: Int)
 
 case class Train(number: Int, route: Route)
 
+case class TrainWithTrajectory(train: Train, trajectory: Trajectory)
+
 object Main {
 
   def detectCollision(rw: Railway, trains: List[Train]): Option[Collision] = {
-    val trajectories = trains.map(t => rw.buildTrajectory(t.route))
-    detectCollision(trajectories)
+    val ttrj = trains.map(t => (TrainWithTrajectory(t, rw.buildTrajectory(t.route))))
+    detectCollision(ttrj)
   }
 
-  private def detectCollision(trjs: List[Trajectory]): Option[Collision] = {
+  private def detectCollision(trjs: List[TrainWithTrajectory]): Option[Collision] = {
     if (trjs.isEmpty) None
     else {
-      findIntersection(trjs.head, trjs.tail) match {
-        case Some(_) => Some(Collision(0, 0))
+      val _this = trjs.head
+      findIntersection(_this, trjs.tail) match {
+        case Some(ttrj) => Some(Collision(_this.train.number, ttrj.train.number))
         case _ => detectCollision(trjs.tail)
       }
     }
   }
 
-  private def findIntersection(trj: Trajectory, those: List[Trajectory]): Option[Trajectory] =
-    those.find(trj.intersects(_))
+  private def findIntersection(_this: TrainWithTrajectory, those: List[TrainWithTrajectory]): Option[TrainWithTrajectory] =
+    those.find(t => _this.trajectory.intersects(t.trajectory))
 }
