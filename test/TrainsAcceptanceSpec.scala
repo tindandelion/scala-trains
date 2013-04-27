@@ -1,8 +1,7 @@
-import org.dandelion.trains.{Collision, Railway, Main}
+import org.dandelion.trains.{Train, Collision, Railway, Main}
 import org.scalatest.FunSpec
 import Main._
 
-case class Train(number: Int, route: Route)
 
 class TrainsAcceptanceSpec extends FunSpec {
 
@@ -82,12 +81,10 @@ class TrainsAcceptanceSpec extends FunSpec {
   }
 
   def assertNoCollision(rw: Railway[Main.Station], trains: List[Train]) {
-    val routes = trains.map(_.route)
-    assert(detectCollision(rw, routes) === None, "Collision is not expected")
+    assert(detectCollision(rw, trains) === None, "Collision is not expected")
   }
 
   def assertCollide(rw: Railway[Main.Station], trains: List[Train]) {
-    val routes = trains.map(_.route)
-    assert(detectCollision(rw, routes) === Some(Collision()), "Collision is expected")
+    assert(detectCollision(rw, trains) === Some(Collision()), "Collision is expected")
   }
 }
