@@ -6,17 +6,17 @@ trait Position {
   def intersects(other: Position): Boolean
 }
 
-case class AtStation(station: Station) extends Position {
+case class AtStation(s: Station) extends Position {
   override def intersects(other: Position): Boolean = other match {
-    case AtStation(otherStation) => (station == otherStation)
+    case AtStation(otherStation) => (s == otherStation)
     case _ => false
   }
 }
 
-case class AtTrack(fromStation: Station, toStation: Station) extends Position {
+case class AtTrack(from: Station, to: Station) extends Position {
   override def intersects(other: Position): Boolean = other match {
     case AtTrack(fromOther, toOther) =>
-      (fromStation == toOther) && (toStation == fromOther)
+      (from == toOther) && (to == fromOther)
     case _ => false
   }
 }
