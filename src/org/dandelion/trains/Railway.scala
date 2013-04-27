@@ -2,9 +2,11 @@ package org.dandelion.trains
 
 import Types._
 
+class Train(val number: Int, val trajectory: Trajectory)
+
 class Railway(tracks: Map[(Station, Station), Int]) {
 
-  def buildTrajectory(route: Station*): Trajectory = new Trajectory(build(route.toList, List()))
+  def train(number: Int, route: Station*): Train = new Train(number, buildTrajectory(route.toList))
 
   def buildTrajectory(route: Route): Trajectory = new Trajectory(build(route, List()))
 
