@@ -58,5 +58,9 @@ class TrainsAcceptanceSpec extends FunSpec {
 
       assert(!collide(rw, trains))
     }
+
+    ignore("does not report collision if trains follow each other on the same track") {
+
+    }
   }
 }
