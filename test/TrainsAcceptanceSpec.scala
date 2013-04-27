@@ -1,63 +1,62 @@
-import org.dandelion.trains.{Main, Train}
+import org.dandelion.trains.{Railway, Main, Train}
 import org.scalatest.FunSpec
 
 class TrainsAcceptanceSpec extends FunSpec {
 
   import Main._
 
+  def railway(route: ((Station, Station), Int)*): Railway[Main.Station] = Railway[Station](route: _*)
+
+  def train(s: Station*): Train1 = List(s: _*)
+
   describe("trivial configurations") {
     it("reports no collision if there are no trains") {
-      assert(!hasCollisions(List()))
+      val rw = Railway[Station]()
+      val trains = List()
+      assert(!collide(rw, trains))
     }
 
     it("reports no collision if there's only one train") {
-      val trains = List(trainStartingAt("a"))
-      assert(!hasCollisions(trains))
+      val rw = Railway[Station]()
+      val trains = List(train('a'))
+      assert(!collide(rw, trains))
     }
   }
 
   describe("all tracks have the same length") {
     it("reports no collision when 2 trains start from different stations") {
-      val trains = List(trainStartingAt("a"), trainStartingAt("b"))
-      assert(!hasCollisions(trains))
+      val rw = Railway[Station]()
+      val trains = List(train('a'), train('b'))
+      assert(!collide(rw, trains))
     }
 
     it("reports collision when 2 trains start from the same station") {
-      val trains = List(trainStartingAt("b"), trainStartingAt("a"), trainStartingAt("a"))
-      assert(hasCollisions(trains), "crash is expected")
+      val rw = Railway[Station]()
+      val trains = List(train('b'), train('a'), train('a'))
+      assert(collide(rw, trains))
     }
 
     it("reports collision when 2 trains finish at the same station") {
-      val trains = List(
-        new Train(List("a", "b")),
-        new Train(List("c", "b")))
+      val rw = Railway(('a', 'b') -> 1, ('c', 'b') -> 1)
+      val trains = List(train('a', 'b'), train('c', 'b'))
 
-      assert(hasCollisions(trains), "collision is expected")
+      assert(collide(rw, trains))
     }
 
     it("reports collision when one train finishes at the station and another passes it later") {
-      val trains = List(
-        new Train(List('a', 'b')),
-        new Train(List('c', 'b', 'd')))
+      val rw = Railway(('a', 'b') -> 1, ('c', 'b') -> 1, ('b', 'd') -> 1)
+      val trains = List(train('a', 'b'), train('c', 'b', 'd'))
 
-      assert(hasCollisions(trains), "collision is expected")
+      assert(collide(rw, trains))
     }
   }
 
   describe("tracks have variable length") {
     it("takes track length into account") {
-      val tracks = Map[(Any, Any), Int](
-        ('a', 'b') -> 1,
-        ('b', 'c') -> 1,
-        ('d', 'b') -> 2)
+      val rw = Railway(('a', 'b') -> 1, ('b', 'c') -> 1, ('d', 'b') -> 2)
+      val trains = List(train('a', 'b', 'c'), train('d', 'b'))
 
-      val trains = List(
-        new Train(List('a', 'b', 'c'), tracks),
-        new Train(List('d', 'b'), tracks))
-
-      assert(!hasCollisions(trains), "collision is not expected")
+      assert(!collide(rw, trains))
     }
   }
-
-  def trainStartingAt(station: String): Train = new Train(List(station))
 }
