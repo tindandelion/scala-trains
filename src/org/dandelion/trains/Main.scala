@@ -3,8 +3,7 @@ package org.dandelion.trains
 import scala.Some
 
 
-case class Collision(_1: Train, _2: Train, position: Position)
-
+case class Collision(one: Train, two: Train, position: Position)
 
 object Main {
   def detectCollision(trains: List[Train]): Option[Collision] = {
