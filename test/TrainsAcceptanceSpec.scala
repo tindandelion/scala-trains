@@ -59,8 +59,19 @@ class TrainsAcceptanceSpec extends FunSpec {
       assert(!collide(rw, trains))
     }
 
-    ignore("does not report collision if trains follow each other on the same track") {
+    it("does not report collision if trains follow each other on the same track") {
+      val rw = Railway(
+        ('a', 'c') -> 2,
+        ('b', 'c') -> 1,
+        ('c', 'd') -> 4,
+        ('d', 'e') -> 1,
+        ('d', 'f') -> 1)
 
+      val trains = List(
+        train('a', 'c', 'd', 'e'),
+        train('b', 'c', 'd', 'f'))
+
+      assert(!collide(rw, trains))
     }
   }
 }
