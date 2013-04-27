@@ -8,11 +8,7 @@ case class Collision(_1: Train, _2: Train, posision: Position)
 
 object Main {
 
-  def detectCollision(rw: Railway, trains: List[Train]): Option[Collision] = {
-    detectCollision(trains)
-  }
-
-  def detectCollision(trains: List[Train]): Option[Collision] = {
+  def detectCollision(trains: List[Train]): Option[Collision] =
     if (trains.isEmpty) None
     else {
       findCollision(trains.head, trains.tail) match {
@@ -20,7 +16,6 @@ object Main {
         case found => found
       }
     }
-  }
 
   private def findCollision(_this: Train, those: List[Train]): Option[Collision] =
     if (those.isEmpty) None

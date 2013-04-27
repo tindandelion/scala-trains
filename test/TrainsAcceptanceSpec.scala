@@ -40,14 +40,21 @@ class TrainsAcceptanceSpec extends FunSpec {
       val rw = Railway(('a', 'b') -> 1, ('c', 'b') -> 1)
       val trains = List(rw.train(1, 'a', 'b'), rw.train(2, 'c', 'b'))
 
-      assertCollide(trains, (1, 2))
+      assertCollide(trains, (1, 2, AtStation('b')))
     }
 
     it("reports collision when one train finishes at the station and another passes it later") {
       val rw = Railway(('a', 'b') -> 1, ('c', 'b') -> 1, ('b', 'd') -> 1)
       val trains = List(rw.train(1, 'a', 'b'), rw.train(2, 'c', 'b', 'd'))
 
-      assertCollide(trains, (1, 2))
+      assertCollide(trains, (1, 2, AtStation('b')))
+    }
+
+    it("reports collision when trains meet at the track") {
+      val rw = Railway(('a', 'b') -> 1)
+      val trains = List(rw.train(1, 'a', 'b'), rw.train(2, 'b', 'a'))
+
+      assertCollide(trains, (1, 2, AtTrack('a', 'b')))
     }
   }
 
@@ -78,16 +85,6 @@ class TrainsAcceptanceSpec extends FunSpec {
 
   def assertNoCollision(trains: List[Train]) {
     assert(detectCollision(trains) === None, "Collision is not expected")
-  }
-
-  def assertCollide(trains: List[Train], colliding: (Int, Int)) {
-    detectCollision(trains) match {
-      case None => fail("collision is expected")
-      case Some(Collision(t1, t2, _)) => {
-        if (!((t1.number, t2.number) == colliding))
-          fail("Collision is expected for trains " + colliding + ", but was for " + (t1, t2))
-      }
-    }
   }
 
   def assertCollide(trains: List[Train], colliding: (Int, Int, Position)) {
