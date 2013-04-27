@@ -31,9 +31,13 @@ class Trajectory(val positions: List[Position]) {
     else new Trajectory(positions.tail)
 
   def intersects(other: Trajectory): Boolean = {
-    if (current.intersects(other.current)) true
-    else if (isFinished && other.isFinished) false
-    else rest.intersects(other.rest)
+    intersection(other) != None
+  }
+
+  def intersection(other: Trajectory): Option[Position] = {
+    if (current.intersects(other.current)) Some(current)
+    else if (isFinished && other.isFinished) None
+    else rest.intersection(other.rest)
   }
 }
 

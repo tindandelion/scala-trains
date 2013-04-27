@@ -3,7 +3,7 @@ package org.dandelion.trains
 import scala.Some
 
 
-case class Collision(_1: Train, _2: Train)
+case class Collision(_1: Train, _2: Train, posision: Position)
 
 
 object Main {
@@ -15,14 +15,20 @@ object Main {
   def detectCollision(trains: List[Train]): Option[Collision] = {
     if (trains.isEmpty) None
     else {
-      val head = trains.head
-      findIntersection(head, trains.tail) match {
-        case Some(other) => Some(Collision(head, other))
-        case _ => detectCollision(trains.tail)
+      findCollision(trains.head, trains.tail) match {
+        case None => detectCollision(trains.tail)
+        case found => found
       }
     }
   }
 
-  private def findIntersection(_this: Train, those: List[Train]): Option[Train] =
-    those.find(t => _this.trajectory.intersects(t.trajectory))
+  private def findCollision(_this: Train, those: List[Train]): Option[Collision] =
+    if (those.isEmpty) None
+    else {
+      val that = those.head
+      _this.trajectory.intersection(that.trajectory) match {
+        case Some(position) => Some(Collision(_this, that, position))
+        case _ => findCollision(_this, those.tail)
+      }
+    }
 }

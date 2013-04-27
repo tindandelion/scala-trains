@@ -83,7 +83,7 @@ class TrainsAcceptanceSpec extends FunSpec {
   def assertCollide(trains: List[Train], colliding: (Int, Int)) {
     detectCollision(trains) match {
       case None => fail("collision is expected")
-      case Some(Collision(t1, t2)) => {
+      case Some(Collision(t1, t2, _)) => {
         if (!((t1.number, t2.number) == colliding))
           fail("Collision is expected for trains " + colliding + ", but was for " + (t1, t2))
       }
@@ -93,9 +93,9 @@ class TrainsAcceptanceSpec extends FunSpec {
   def assertCollide(trains: List[Train], colliding: (Int, Int, Position)) {
     detectCollision(trains) match {
       case None => fail("collision is expected")
-      case Some(Collision(t1, t2)) => {
-        if (!((t1.number, t2.number) == colliding))
-          fail("Collision is expected for trains " + colliding + ", but was for " + (t1, t2))
+      case Some(Collision(t1, t2, pos)) => {
+        if (!((t1.number, t2.number, pos) == colliding))
+          fail("Collision is expected for trains " + colliding + ", but was for " + (t1.number, t2.number, pos))
       }
     }
   }
