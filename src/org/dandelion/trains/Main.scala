@@ -3,7 +3,7 @@ package org.dandelion.trains
 import scala.Some
 
 
-case class Collision(_1: Train, _2: Train, posision: Position)
+case class Collision(_1: Train, _2: Train, position: Position)
 
 
 object Main {
