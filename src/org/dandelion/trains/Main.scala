@@ -11,19 +11,19 @@ object Main {
   def detectCollision(trains: List[Train]): Option[Collision] =
     if (trains.isEmpty) None
     else {
-      findCollision(trains.head, trains.tail) match {
+      detectCollision(trains.head, trains.tail) match {
         case None => detectCollision(trains.tail)
         case found => found
       }
     }
 
-  private def findCollision(_this: Train, those: List[Train]): Option[Collision] =
+  private def detectCollision(_this: Train, those: List[Train]): Option[Collision] =
     if (those.isEmpty) None
     else {
       val that = those.head
       _this.trajectory.intersection(that.trajectory) match {
         case Some(position) => Some(Collision(_this, that, position))
-        case _ => findCollision(_this, those.tail)
+        case _ => detectCollision(_this, those.tail)
       }
     }
 }
