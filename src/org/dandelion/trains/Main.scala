@@ -3,7 +3,7 @@ package org.dandelion.trains
 import Types._
 import scala.Some
 
-case class Collision()
+case class Collision(t1: Int, t2: Int)
 
 case class Train(number: Int, route: Route)
 
@@ -18,7 +18,7 @@ object Main {
     if (trjs.isEmpty) None
     else {
       findIntersection(trjs.head, trjs.tail) match {
-        case Some(_) => Some(Collision())
+        case Some(_) => Some(Collision(0, 0))
         case _ => detectCollision(trjs.tail)
       }
     }
