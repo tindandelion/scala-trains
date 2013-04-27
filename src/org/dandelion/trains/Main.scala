@@ -1,20 +1,26 @@
 package org.dandelion.trains
 
+case class Collision()
+
 object Main {
   type Station = Char
   type Train = List[Station]
 
-  def collide(rw: Railway[Station], trains: List[Train]) = {
+  def detectCollision(rw: Railway[Station], trains: List[Train]): Option[Collision] = {
     val trajectories = trains.map(rw.buildTrajectory(_))
-    hasCollisions(trajectories)
+    detectCollision(trajectories)
   }
 
-  private def hasCollisions(trjs: List[Trajectory]): Boolean = trjs match {
-    case t :: others => intersects(t, others) || hasCollisions(others)
-    case _ => false
+  private def detectCollision(trjs: List[Trajectory]): Option[Collision] = {
+    if (trjs.isEmpty) None
+    else {
+      findIntersection(trjs.head, trjs.tail) match {
+        case Some(_) => Some(Collision())
+        case _ => detectCollision(trjs.tail)
+      }
+    }
   }
 
-  def intersects(trj: Trajectory, those: List[Trajectory]): Boolean = {
-    those.exists(trj.intersects(_))
-  }
+  private def findIntersection(trj: Trajectory, those: List[Trajectory]): Option[Trajectory] =
+    those.find(trj.intersects(_))
 }
