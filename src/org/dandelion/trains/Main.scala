@@ -1,6 +1,6 @@
 package org.dandelion.trains
 
-import org.dandelion.trains.Main._
+import Types._
 import scala.Some
 
 case class Collision()
@@ -8,9 +8,6 @@ case class Collision()
 case class Train(number: Int, route: Route)
 
 object Main {
-  // TODO: Station?
-  type Station = Char
-  type Route = List[Station]
 
   def detectCollision(rw: Railway[Station], trains: List[Train]): Option[Collision] = {
     val trajectories = trains.map(t => rw.buildTrajectory(t.route))
